@@ -1,0 +1,111 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/ui.lua"]'''
+pattern = '''
+if #sub_node_1 > 0 then
+'''
+position = 'before'
+payload = '''
+-- teehee x3 i remove your nodes :3
+under_checkbox_nodes = {} 
+table.insert(under_checkbox_nodes, {
+    n = G.UIT.R,
+    config = {
+        align = "cm",
+        colour = G.C.ORANGE,
+        button = "tryUpdateMod",
+        mod_id = modInfo.id,
+        r = 0.1,
+        hover = true,
+        shadow = true,
+        shadow_height = 0.5,
+    },
+    nodes = {
+        {
+            n = G.UIT.T,
+            config = {text = "^", scale = 0.5},
+        },
+    }
+})
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/game_object.lua"]'''
+pattern = '''
+assert(o.mod == nil, "Created object should not have \"mod\" field defined.")
+o.mod = SMODS.current_mod
+o.original_mod = o.mod
+'''
+position = 'at'
+payload = '''
+assert(o.mod == nil and not o.force_mod, "Created object should not have \"mod\" field defined.")
+o.mod = o.mod or SMODS.current_mod
+o.original_mod = o.mod
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/ui.lua"]'''
+pattern = '''
+UIBox_button({
+    label = { localize('b_mod_list') },
+    shadow = true,
+    scale = scale*0.85,
+    colour = G.C.BOOSTER,
+    button = "openModsDirectory",
+    minh = scale,
+    minw = 9
+}),
+'''
+position = 'after'
+payload = '''
+UIBox_button({
+    label = { "Update SMODS" },
+    shadow = true,
+    scale = scale*0.85*0.7,
+    colour = G.C.FILTER,
+    button = "tryUpdateSmods",
+    minh = scale*0.7,
+    minw = 9*0.7
+}),
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''
+UIBox_button{id = 'main_menu_play', button = not G.SETTINGS.tutorial_complete and "start_run" or "setup_run", colour = G.C.BLUE, minw = 3.65, minh = 1.55, label = {localize('b_play_cap')}, scale = text_scale*2, col = true},
+'''
+position = 'at'
+payload = '''
+{
+    n = G.UIT.C,
+    config = {padding = 0.05},
+    nodes = {
+        {
+            n = G.UIT.R,
+            config = {},
+            nodes = {
+                UIBox_button{id = 'main_menu_play', button = not G.SETTINGS.tutorial_complete and "start_run" or "setup_run", colour = G.C.BLUE, minw = 3.65, minh = 1.55/2.2, label = {localize('b_play_cap')}, scale = text_scale, col = true},
+            },
+        },
+        {
+            n = G.UIT.R,
+            config = {},
+            nodes = {
+                UIBox_button{id = 'main_menu_quick_play', button = "idQuickPlay", colour = darken(G.C.BLUE, 0.2), minw = 3.65, minh = 1.55/2.2, label = {"Quick Play"}, scale = text_scale, col = true},
+            },
+        },
+    }
+},
+'''
+match_indent = true

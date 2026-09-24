@@ -1,0 +1,11 @@
+{
+	"id": "ivydebug",
+	"name": "Ivy's Tools", 
+	"author": ["ivy"], 
+	"description": "misc tools that make ivy's life easier and nobody elses",
+	"prefix": "ivd",
+	"main_file": "main.lua",
+	"priority": 0, 
+	"badge_colour": "FFFFFF",
+	"version": "1.0.0", 
+}
