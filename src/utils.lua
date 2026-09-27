@@ -103,7 +103,9 @@ function id.contains(haystack, needle)
     end
 end
 
-function id.trav(starting_table, matches, call)
+function id.trav(starting_table, matches, call, allow_add)
+    call = call or function() end
+    allow_add = allow_add or function() return true end
     local found = {}
     local seen_tables = {}
     local to_search = {starting_table or _G}
@@ -111,12 +113,12 @@ function id.trav(starting_table, matches, call)
     while #to_search > 0 do
         local cur = to_search[1]
         for k,v in pairs(cur) do
-            if type(v) == "table" and not seen_tables[v] then
+            if type(v) == "table" and (not seen_tables[v]) and allow_add(k, v) then
                 table.insert(to_search, v)
                 seen_tables[v] = true
             end
             if matches(k, v, cur) then
-                local ret = (call or function() end)(k, v, cur)
+                local ret = call(k, v, cur)
                 if ret then
                     cur[k] = ret
                 end

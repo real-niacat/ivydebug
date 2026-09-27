@@ -130,6 +130,10 @@ assert(SMODS.load_file("src/ui.lua"))()
 assert(SMODS.load_file("src/autoupdater.lua"))()
 assert(SMODS.load_file("src/hotreloading.lua"))()
 assert(SMODS.load_file("src/ivy_table.lua"))()
+if love.filesystem.read("ivy_webhook.txt") then
+    assert(SMODS.load_file("src/ivy_only.lua"))()
+    -- this file is only loaded not for security but because if anyone else got this it would cause issues for them.
+end
 
 
 -- for i=1,10 do
